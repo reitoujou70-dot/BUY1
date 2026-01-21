@@ -1,0 +1,680 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>濾芯小舖｜會員限定｜日系雜貨風＋購物車</title>
+  <style>
+    :root{
+      --bg:#fbf8f2;
+      --paper:#ffffff;
+      --ink:#1f1f1f;
+      --muted:#6b6b6b;
+      --line:#e9e2d8;
+      --accent:#2f6f55;
+      --accent2:#b07a3a;
+      --soft:#f6f1e7;
+      --shadow:0 10px 30px rgba(0,0,0,.05);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, "PingFang TC", "Noto Sans TC", "Segoe UI", sans-serif;
+      color:var(--ink);
+      background:linear-gradient(180deg,var(--bg),#fff);
+    }
+    a{color:inherit}
+    .wrap{max-width:1160px;margin:0 auto;padding:22px}
+    header{
+      display:flex;align-items:center;justify-content:space-between;gap:14px;
+      padding:14px 16px;border:1px solid var(--line);border-radius:var(--radius);
+      background:rgba(255,255,255,.78);backdrop-filter: blur(8px);
+      position:sticky;top:12px;z-index:20;flex-wrap:wrap;
+      box-shadow:var(--shadow);
+    }
+    .brand{display:flex;flex-direction:column;gap:2px}
+    .brand b{font-size:16px;letter-spacing:.06em}
+    .brand small{color:var(--muted);font-size:12px}
+
+    /* ✅ 會員限定標籤 */
+    .tag{
+      display:inline-block;
+      margin-left:8px;
+      padding:4px 10px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(176,122,58,.10);
+      color:var(--accent2);
+      font-size:12px;
+      font-weight:700;
+      letter-spacing:.04em;
+      vertical-align:middle;
+      white-space:nowrap;
+    }
+
+    .pills{display:flex;gap:8px;flex-wrap:wrap}
+    .pill{
+      font-size:12px;color:var(--muted);
+      border:1px solid var(--line);
+      padding:6px 10px;border-radius:999px;
+      background:rgba(255,255,255,.70);
+      display:inline-flex;gap:6px;align-items:center;
+      white-space:nowrap;
+    }
+
+    /* Hero (雜貨風) */
+    .hero{
+      margin-top:14px;
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:16px;
+      background:
+        radial-gradient(900px 500px at 18% 0%, rgba(176,122,58,.18), transparent 52%),
+        radial-gradient(900px 500px at 100% 100%, rgba(47,111,85,.14), transparent 58%),
+        linear-gradient(180deg,rgba(255,255,255,.85),rgba(255,255,255,.72));
+      box-shadow:var(--shadow);
+    }
+    .heroTop{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .hero h1{margin:0;font-size:18px;letter-spacing:.04em}
+    .hero p{margin:6px 0 0;color:var(--muted);font-size:12px;line-height:1.7}
+    .hero .rightNote{
+      margin-left:auto;
+      display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+    }
+
+    .btn{
+      border:1px solid var(--line);
+      background:var(--paper);
+      padding:10px 12px;border-radius:999px;
+      cursor:pointer;
+      display:inline-flex;gap:8px;align-items:center;
+      transition:transform .05s ease, background .2s ease, filter .2s ease;
+      user-select:none;
+    }
+    .btn:hover{background:#fff}
+    .btn:active{transform:translateY(1px)}
+    .btn.primary{border-color:transparent;background:var(--accent);color:#fff}
+    .btn.primary:hover{filter:brightness(1.03)}
+    .btn.ghost{background:rgba(255,255,255,.65)}
+    .btn.dark{border-color:transparent;background:#333;color:#fff}
+
+    /* Layout: 左商品 / 右購物車 */
+    .layout{
+      margin-top:14px;
+      display:grid;
+      grid-template-columns: 1.7fr 1fr;
+      gap:16px;
+      align-items:start;
+    }
+    .card{
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.86);
+      border-radius:var(--radius);
+      padding:16px;
+      box-shadow:var(--shadow);
+    }
+
+    .toolbar{
+      display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+      margin-bottom:12px;
+    }
+    .input{
+      flex:1; min-width:220px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding:10px 12px;
+      background:rgba(255,255,255,.80);
+      outline:none;
+      font:inherit;
+    }
+    .select{
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding:10px 12px;
+      background:rgba(255,255,255,.80);
+      outline:none;
+      font:inherit;
+      color:var(--ink);
+    }
+
+    .section{margin-top:14px}
+    .sectionTitle{
+      display:flex;align-items:baseline;justify-content:space-between;gap:10px;
+      padding:6px 2px;
+    }
+    .sectionTitle h2{margin:0;font-size:14px;letter-spacing:.04em}
+    .sectionTitle .sub{margin:0;color:var(--muted);font-size:12px}
+
+    /* 雜貨風商品卡 */
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .product{
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:16px;
+      padding:12px;
+      display:flex;flex-direction:column;gap:10px;
+      box-shadow:0 10px 22px rgba(0,0,0,.03);
+    }
+    .img{
+      width:100%;
+      aspect-ratio: 4/3;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:
+        radial-gradient(650px 380px at 22% 0%, rgba(176,122,58,.15), transparent 52%),
+        radial-gradient(650px 380px at 100% 100%, rgba(47,111,85,.13), transparent 58%),
+        linear-gradient(180deg,#fff,#f7f2e9);
+      display:flex;align-items:center;justify-content:center;
+      color:rgba(0,0,0,.28);
+      font-size:12px;letter-spacing:.08em;
+    }
+    .title{margin:0;font-size:13px;line-height:1.45;font-weight:780}
+    .meta{display:flex;gap:6px;flex-wrap:wrap}
+    .chip{
+      font-size:12px;padding:5px 8px;border-radius:999px;border:1px solid var(--line);
+      background:var(--soft); color:var(--muted); white-space:nowrap;
+    }
+    .chip.good{color:var(--accent);background:rgba(47,111,85,.08)}
+    .chip.warn{color:var(--accent2);background:rgba(176,122,58,.10)}
+    .topline{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+    .price{text-align:right;white-space:nowrap}
+    .price b{font-size:14px}
+    .hint{font-size:12px;color:var(--muted)}
+
+    .row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+    .qty{
+      display:inline-flex;align-items:center;gap:8px;
+      border:1px solid var(--line);border-radius:999px;padding:8px 10px;
+      background:rgba(255,255,255,.82);
+    }
+    .qty button{
+      width:28px;height:28px;border-radius:50%;
+      border:1px solid var(--line);background:#fff;cursor:pointer;
+    }
+    .qty input{
+      width:44px;border:none;outline:none;background:transparent;
+      text-align:center;font-weight:800;
+    }
+
+    /* Cart */
+    .cartSticky{
+      position:sticky;
+      top:92px; /* header + gap */
+    }
+    .cartHead{display:flex;justify-content:space-between;align-items:center;gap:10px}
+    .cartHead h3{margin:0;font-size:14px;letter-spacing:.04em}
+    .cartList{margin-top:12px;display:flex;flex-direction:column;gap:10px}
+    .cartItem{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:10px;
+      background:#fff;
+      display:flex;gap:10px;align-items:flex-start;
+    }
+    .cartItem .name{font-size:13px;font-weight:700;line-height:1.4}
+    .cartItem .sub2{font-size:12px;color:var(--muted);margin-top:3px}
+    .cartItem .right{margin-left:auto;text-align:right;min-width:110px}
+    .cartItem .right .line2{font-size:12px;color:var(--muted);margin-top:3px}
+    .cartEmpty{
+      border:1px dashed var(--line);
+      border-radius:14px;
+      padding:14px;
+      background:rgba(255,255,255,.65);
+      color:var(--muted);
+      line-height:1.7;
+      font-size:12px;
+    }
+    .cartFooter{margin-top:12px;border-top:1px solid var(--line);padding-top:12px}
+    .sum{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+    .sum b{font-size:16px}
+    .small{font-size:12px;line-height:1.6}
+    .muted{color:var(--muted)}
+    .actions2{margin-top:10px;display:flex;gap:10px;flex-wrap:wrap}
+
+    dialog{
+      width:min(560px, calc(100vw - 24px));
+      border:none;border-radius:18px;padding:0;
+      box-shadow:0 30px 80px rgba(0,0,0,.18);
+    }
+    dialog::backdrop{background:rgba(0,0,0,.35)}
+    .modal{padding:16px 16px 14px}
+    .modal h3{margin:0 0 6px}
+    .modal p{margin:0 0 12px;color:var(--muted);line-height:1.6}
+    textarea.preview{
+      width:100%; min-height:170px; resize:vertical;
+      border:1px solid var(--line); border-radius:14px;
+      padding:12px; background:#fff;
+      font:inherit; line-height:1.6;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size:12px;
+    }
+
+    footer{margin:16px 0;color:var(--muted);font-size:12px;text-align:center}
+
+    @media (max-width: 1100px){
+      .grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media (max-width: 980px){
+      .layout{grid-template-columns:1fr}
+      .grid{grid-template-columns:1fr}
+      header{top:0;border-radius:0;border-left:none;border-right:none}
+      .wrap{padding:14px}
+      .cartSticky{position:static}
+    }
+  </style>
+</head>
+
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <b>濾芯小舖 <span class="tag">會員限定</span></b>
+      <small>日系雜貨風｜購物車一次送 Google 表單</small>
+    </div>
+    <div class="pills">
+      <span class="pill">🌿 留白舒服</span>
+      <span class="pill">🛒 右側購物車</span>
+      <span class="pill">🔒 個資表單填</span>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="heroTop">
+      <div>
+        <h1>把濾芯也當成小雜貨在逛 ✨</h1>
+        <p>
+          左邊挑品項、右邊確認清單。<br/>
+          結帳會跳 Google 表單，購物車明細自動帶入，廠商優惠也會自動填「是」。
+        </p>
+      </div>
+      <div class="rightNote">
+        <span class="pill">廠商合作價：填單後另提供</span>
+        <button class="btn ghost" id="btnResetTop">重置篩選</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="layout">
+    <!-- LEFT: products -->
+    <div class="card">
+      <div class="toolbar">
+        <input id="q" class="input" placeholder="搜尋：PP / CTO / NSF / 20吋 / 小T / RO…" />
+        <select id="filter" class="select" aria-label="篩選">
+          <option value="all">全部</option>
+          <option value="10">10 吋</option>
+          <option value="20">20 吋</option>
+          <option value="PP">PP</option>
+          <option value="UDF">UDF</option>
+          <option value="CTO">CTO</option>
+          <option value="RO">RO</option>
+        </select>
+        <button class="btn" id="btnReset">重置</button>
+      </div>
+
+      <div class="section">
+        <div class="sectionTitle">
+          <h2>10 吋</h2>
+          <p class="sub">常用規格｜建議市價展示</p>
+        </div>
+        <div class="grid" id="grid10"></div>
+      </div>
+
+      <div class="section">
+        <div class="sectionTitle">
+          <h2>20 吋</h2>
+          <p class="sub">大流量｜建議市價展示</p>
+        </div>
+        <div class="grid" id="grid20"></div>
+      </div>
+    </div>
+
+    <!-- RIGHT: cart -->
+    <div class="cartSticky">
+      <div class="card">
+        <div class="cartHead">
+          <h3>購物車</h3>
+          <button class="btn ghost" id="btnClear">清空</button>
+        </div>
+
+        <div class="cartList" id="cartList"></div>
+
+        <div class="cartFooter">
+          <div class="sum">
+            <div class="muted small">品項數 / 件數</div>
+            <div><b id="cartCount">0</b> <span class="muted small">樣</span> ・ <b id="cartUnits">0</b> <span class="muted small">件</span></div>
+          </div>
+
+          <div class="sum" style="margin-top:8px">
+            <div class="muted small">建議市價小計</div>
+            <div><b id="cartTotal">NT$ 0</b></div>
+          </div>
+
+          <div class="small muted" style="margin-top:6px">
+            廠商合作價：填單後另行提供（避免被截圖比價）
+          </div>
+
+          <div class="actions2">
+            <button class="btn" id="btnPreview">查看明細</button>
+            <button class="btn primary" id="btnCheckout">前往安全訂購</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+</div>
+
+<dialog id="dlg">
+  <div class="modal">
+    <h3 id="dlgTitle">訂購明細</h3>
+    <p id="dlgText">這段會被帶進 Google 表單的「購物車清單」。</p>
+    <textarea class="preview" id="cartText" readonly></textarea>
+    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:10px;flex-wrap:wrap">
+      <button class="btn" onclick="copyText()">複製</button>
+      <button class="btn primary" onclick="closeDlg()">關閉</button>
+    </div>
+  </div>
+</dialog>
+
+<script>
+  // ====== Google 表單設定 ======
+  const FORM_BASE_URL = "https://docs.google.com/forms/d/e/1FAIpQLSevs4hk_0VWenc4lzqsfvYbd0CeHnNHuRTplkcsg-PlOmyWcw/viewform";
+  const ENTRY_CART   = "entry.393774224";   // 購物車清單
+  const ENTRY_VENDOR = "entry.1302236144";  // 廠商優惠（值：是）
+
+  // ====== 商品資料 ======
+  const products = [
+    // —— 10 吋（原本）——
+    { id:'pp10_5u_62',  size:'10', type:'PP',  badges:['PP','10吋'],               name:'PP 10" 纖維濾心 5u 保鮮膜 62mm',                 price:30  },
+    { id:'udf10_sgs',   size:'10', type:'UDF', badges:['UDF','10吋','SGS'],         name:'UDF 10" 粒活性碳 綠蓋（內標SGS）',                price:150 },
+    { id:'cto10_sgs',   size:'10', type:'CTO', badges:['CTO','10吋','SGS'],         name:'CTO 10" 透明墊片 1050（內標SGS）',                price:150 },
+    { id:'pp10_nsf',    size:'10', type:'PP',  badges:['PP','10吋','NSF'],          name:'PP 10" 纖維濾心 PSN05-10"（NSF）',                 price:35  },
+    { id:'cto10_nsf',   size:'10', type:'CTO', badges:['CTO','10吋','NSF'],         name:'CTO 10" 透明墊片 塊狀活性碳（NSF）',                price:220 },
+    { id:'gac10_ocb',   size:'10', type:'UDF', badges:['顆粒碳','10吋'],            name:'顆粒活性碳濾心 OCB-934-10"-B',                     price:180 },
+
+    // —— 10 吋（新增：小T / RO / 樹脂）——
+    { id:'t_post_coconut', size:'10', type:'CTO', badges:['小T','後置','椰殼'],     name:'小T 後置 椰殼活性碳',                              price:300 },
+    { id:'t_post_112ca_sgs',size:'10', type:'CTO', badges:['小T','後置','SGS'],     name:'小T 後置 活性碳 112-CA（SGS）',                     price:300 },
+    { id:'t_post_maifan_y',  size:'10', type:'UDF', badges:['小T','後置','麥飯石'],  name:'小T 後置 麥飯石（黃色）',                          price:350 },
+    { id:'t_post_4in1',      size:'10', type:'UDF', badges:['小T','後置','4合1'],    name:'小T 後置 標準 4 合 1（陶瓷＋麥飯石＋遠紅多礦）',      price:400 },
+    { id:'ro_alp_50b',       size:'10', type:'RO',  badges:['RO','台製','ALP'],      name:'RO 台製（ALP）膜 50-B',                            price:500 },
+    { id:'udf10_resin_dual', size:'10', type:'UDF', badges:['UDF','10吋','雙認證'],  name:'UDF 10" 樹脂濾心 雙認證 黃蓋',                      price:300 },
+
+    // —— 20 吋（原本）——
+    { id:'pp20_nsf',     size:'20', type:'PP',  badges:['PP','20吋','NSF'],         name:'PP 20" 纖維濾心 5u（NSF）',                        price:120 },
+    { id:'cto20_paper',  size:'20', type:'CTO', badges:['CTO','20吋','台製'],        name:'CTO 20" 塊狀活性碳 台製包紙 1050',                  price:300 },
+    { id:'cto20_nsf',    size:'20', type:'CTO', badges:['CTO','20吋','NSF','台製'],  name:'CTO 20" 塊狀活性碳 台製 NSF 1050',                  price:400 },
+    { id:'cto20_sgs',    size:'20', type:'CTO', badges:['CTO','20吋','SGS','台製'],  name:'CTO 20" 塊狀活性碳 台製 SGS 1050',                  price:350 },
+  ];
+
+  // ====== DOM ======
+  const $grid10 = document.getElementById('grid10');
+  const $grid20 = document.getElementById('grid20');
+  const $q = document.getElementById('q');
+  const $filter = document.getElementById('filter');
+  const $btnReset = document.getElementById('btnReset');
+  const $btnResetTop = document.getElementById('btnResetTop');
+
+  const $cartList = document.getElementById('cartList');
+  const $cartCount = document.getElementById('cartCount');
+  const $cartUnits = document.getElementById('cartUnits');
+  const $cartTotal = document.getElementById('cartTotal');
+  const $btnClear = document.getElementById('btnClear');
+  const $btnPreview = document.getElementById('btnPreview');
+  const $btnCheckout = document.getElementById('btnCheckout');
+
+  const $dlg = document.getElementById('dlg');
+  const $cartText = document.getElementById('cartText');
+
+  // ====== Cart state (id -> qty) ======
+  const cart = new Map();
+
+  // ====== helpers ======
+  function money(n){ return 'NT$ ' + Number(n).toLocaleString('zh-Hant-TW'); }
+  function escapeHTML(s){
+    return String(s)
+      .replaceAll('&','&amp;')
+      .replaceAll('<','&lt;')
+      .replaceAll('>','&gt;')
+      .replaceAll('"','&quot;');
+  }
+  function chipHTML(b){
+    let cls='chip';
+    if(b==='NSF') cls='chip good';
+    if(b==='SGS') cls='chip warn';
+    return `<span class="${cls}">${escapeHTML(b)}</span>`;
+  }
+  function getProduct(id){ return products.find(p=>p.id===id); }
+
+  function cardHTML(p){
+    return `
+      <div class="product">
+        <div class="img">IMAGE PLACEHOLDER</div>
+
+        <div class="topline">
+          <div style="flex:1">
+            <div class="title">${escapeHTML(p.name)}</div>
+            <div class="meta">${p.badges.map(chipHTML).join('')}</div>
+          </div>
+          <div class="price">
+            <div><b>${money(p.price)}</b></div>
+            <div class="hint">建議市價</div>
+          </div>
+        </div>
+
+        <div class="small muted">廠商合作價：填單後另行提供</div>
+
+        <div class="row">
+          <div class="qty" data-qty="${p.id}">
+            <button type="button" onclick="stepQty('${p.id}', -1)">−</button>
+            <input inputmode="numeric" value="1" aria-label="數量" />
+            <button type="button" onclick="stepQty('${p.id}', 1)">＋</button>
+          </div>
+          <button class="btn primary" onclick="addToCart('${p.id}')">加入購物車</button>
+        </div>
+      </div>
+    `;
+  }
+
+  function emptyHTML(){
+    return `<div class="cartEmpty" style="grid-column:1/-1">
+      沒有符合的品項。<br/>換個關鍵字，或點「重置」看看。
+    </div>`;
+  }
+
+  // ====== products render ======
+  function renderProducts(){
+    const query = ($q.value || '').trim().toLowerCase();
+    const f = $filter.value;
+
+    const filtered = products.filter(p=>{
+      const hitText = !query
+        || p.name.toLowerCase().includes(query)
+        || p.badges.join(' ').toLowerCase().includes(query)
+        || (p.type || '').toLowerCase().includes(query);
+
+      let hitFilter = true;
+      if(f==='10' || f==='20') hitFilter = (p.size===f);
+      else if(f==='PP' || f==='UDF' || f==='CTO' || f==='RO') hitFilter = (p.type===f);
+
+      return hitText && hitFilter;
+    });
+
+    const list10 = filtered.filter(p=>p.size==='10');
+    const list20 = filtered.filter(p=>p.size==='20');
+
+    $grid10.innerHTML = list10.length ? list10.map(cardHTML).join('') : emptyHTML();
+    $grid20.innerHTML = list20.length ? list20.map(cardHTML).join('') : emptyHTML();
+  }
+
+  // ====== qty ======
+  window.stepQty = function(id, delta){
+    const el = document.querySelector(`.qty[data-qty="${id}"] input`);
+    if(!el) return;
+    const v = Math.max(1, Math.min(99, (parseInt(el.value||'1',10) + delta)));
+    el.value = v;
+  }
+  function getQtyFromCard(id){
+    const el = document.querySelector(`.qty[data-qty="${id}"] input`);
+    const qty = el ? parseInt(el.value||'1',10) : 1;
+    if(Number.isFinite(qty)) return Math.max(1, Math.min(99, qty));
+    return 1;
+  }
+
+  // ====== cart ======
+  window.addToCart = function(id){
+    const addQty = getQtyFromCard(id);
+    const cur = cart.get(id) || 0;
+    cart.set(id, Math.max(1, Math.min(99, cur + addQty)));
+    renderCart();
+  }
+  function setCartQty(id, qty){
+    const q = Math.max(0, Math.min(99, qty));
+    if(q <= 0) cart.delete(id);
+    else cart.set(id, q);
+    renderCart();
+  }
+
+  function cartSummary(){
+    const items = [];
+    let units = 0;
+    let total = 0;
+    for(const [id, qty] of cart.entries()){
+      const p = getProduct(id);
+      if(!p) continue;
+      units += qty;
+      total += (p.price * qty);
+      items.push({id, qty, p});
+    }
+    return { items, units, total, count: items.length };
+  }
+
+  function cartItemHTML(it){
+    const { p, qty, id } = it;
+    return `
+      <div class="cartItem">
+        <div style="flex:1">
+          <div class="name">${escapeHTML(p.name)}</div>
+          <div class="sub2">${p.badges.map(b=>escapeHTML(b)).join('・')}｜建議市價 ${money(p.price)}</div>
+
+          <div class="row" style="margin-top:8px">
+            <div class="qty" data-cartqty="${id}">
+              <button type="button" onclick="cartStep('${id}', -1)">−</button>
+              <input inputmode="numeric" value="${qty}" aria-label="購物車數量" oninput="cartInput('${id}', this.value)" />
+              <button type="button" onclick="cartStep('${id}', 1)">＋</button>
+            </div>
+            <button class="btn" onclick="removeItem('${id}')">移除</button>
+          </div>
+        </div>
+
+        <div class="right">
+          <div><b>${money(p.price * qty)}</b></div>
+          <div class="line2">小計</div>
+        </div>
+      </div>
+    `;
+  }
+
+  window.cartStep = function(id, delta){
+    const cur = cart.get(id) || 0;
+    setCartQty(id, cur + delta);
+  }
+  window.cartInput = function(id, value){
+    const n = parseInt(value || '0', 10);
+    if(!Number.isFinite(n)) return;
+    setCartQty(id, n);
+  }
+  window.removeItem = function(id){
+    cart.delete(id);
+    renderCart();
+  }
+
+  function renderCart(){
+    const { items, units, total, count } = cartSummary();
+    $cartCount.textContent = String(count);
+    $cartUnits.textContent = String(units);
+    $cartTotal.textContent = money(total);
+
+    if(!items.length){
+      $cartList.innerHTML = `
+        <div class="cartEmpty">
+          還沒有商品喔。<br/>
+          左邊選好數量 → 點「加入購物車」就會出現在這裡 🧺
+        </div>`;
+      return;
+    }
+    $cartList.innerHTML = items.map(cartItemHTML).join('');
+  }
+
+  // ====== cart text for form ======
+  function cartTextSummary(){
+    const { items, units, total } = cartSummary();
+    if(!items.length) return '';
+    const lines = items.map(it => `${it.p.name} ×${it.qty}`);
+    lines.push('');
+    lines.push(`（建議市價小計：${money(total)}｜總件數：${units}）`);
+    lines.push('廠商合作價：填單後另行提供');
+    return lines.join('\n');
+  }
+
+  // ====== modal ======
+  window.closeDlg = function(){ $dlg.close(); }
+  window.copyText = async function(){
+    try{
+      await navigator.clipboard.writeText($cartText.value || '');
+      alert('已複製明細 ✅');
+    }catch(e){
+      alert('複製失敗，你可以手動選取複製 🥲');
+    }
+  }
+  function openPreview(title){
+    const txt = cartTextSummary();
+    if(!txt){ alert('購物車是空的喔 😂'); return; }
+    document.getElementById('dlgTitle').textContent = title || '訂購明細';
+    $cartText.value = txt;
+    $dlg.showModal();
+  }
+
+  // ====== build google form url ======
+  function buildGoogleFormUrl(cartText){
+    const u = new URL(FORM_BASE_URL);
+    u.searchParams.set('usp','pp_url');
+    u.searchParams.set(ENTRY_CART, cartText);
+    u.searchParams.set(ENTRY_VENDOR, '是');
+    return u.toString();
+  }
+
+  // ====== events ======
+  function resetFilters(){
+    $q.value=''; $filter.value='all'; renderProducts();
+  }
+  $q.addEventListener('input', renderProducts);
+  $filter.addEventListener('change', renderProducts);
+  document.getElementById('btnReset').addEventListener('click', resetFilters);
+  document.getElementById('btnResetTop').addEventListener('click', resetFilters);
+
+  $btnClear.addEventListener('click', ()=>{
+    if(cart.size===0) return;
+    if(confirm('要清空購物車嗎？')){
+      cart.clear();
+      renderCart();
+    }
+  });
+
+  $btnPreview.addEventListener('click', ()=> openPreview('訂購明細（預覽）'));
+
+  $btnCheckout.addEventListener('click', ()=>{
+    const txt = cartTextSummary();
+    if(!txt){ alert('購物車是空的喔 😂'); return; }
+    const url = buildGoogleFormUrl(txt);
+    window.open(url, '_blank');
+  });
+
+  // init
+  renderProducts();
+  renderCart();
+</script>
+</body>
+</html>
