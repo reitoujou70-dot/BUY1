@@ -200,7 +200,7 @@
     /* Cart */
     .cartSticky{
       position:sticky;
-      top:92px; /* header + gap */
+      top:92px;
     }
     .cartHead{display:flex;justify-content:space-between;align-items:center;gap:10px}
     .cartHead h3{margin:0;font-size:14px;letter-spacing:.04em}
@@ -299,7 +299,7 @@
     <!-- LEFT: products -->
     <div class="card">
       <div class="toolbar">
-        <input id="q" class="input" placeholder="搜尋：PP / CTO / NSF / 20吋 / 小T / RO…" />
+        <input id="q" class="input" placeholder="搜尋：PP / CTO / NSF / 20吋 / 小T / RO / 龍頭…" />
         <select id="filter" class="select" aria-label="篩選">
           <option value="all">全部</option>
           <option value="10">10 吋</option>
@@ -308,7 +308,21 @@
           <option value="UDF">UDF</option>
           <option value="CTO">CTO</option>
           <option value="RO">RO</option>
+          <option value="ACC">配件</option>
         </select>
+
+        <!-- ✅ 配件細分：只有選「配件」才顯示 -->
+        <select id="subFilter" class="select" aria-label="配件細分" style="display:none">
+          <option value="all">配件：全部</option>
+          <option value="馬達/腳架">馬達/腳架</option>
+          <option value="電源">電源</option>
+          <option value="龍頭">龍頭</option>
+          <option value="底座">底座</option>
+          <option value="壓力桶">壓力桶</option>
+          <option value="濾頭/外殼">濾頭/外殼</option>
+          <option value="其他">其他</option>
+        </select>
+
         <button class="btn" id="btnReset">重置</button>
       </div>
 
@@ -326,6 +340,15 @@
           <p class="sub">大流量｜建議市價展示</p>
         </div>
         <div class="grid" id="grid20"></div>
+      </div>
+
+      <!-- ✅ 小升級：配件獨立一區 -->
+      <div class="section">
+        <div class="sectionTitle">
+          <h2>配件</h2>
+          <p class="sub">龍頭 / 底座 / 馬達 / 變壓器…</p>
+        </div>
+        <div class="grid" id="gridAcc"></div>
       </div>
     </div>
 
@@ -363,7 +386,7 @@
     </div>
   </div>
 
-  
+  <footer>小提醒：配件現在獨立一區了，找起來會更像逛雜貨店 😼</footer>
 </div>
 
 <dialog id="dlg">
@@ -387,33 +410,91 @@
   // ====== 商品資料 ======
   const products = [
     // —— 10 吋（原本）——
-    { id:'pp10_5u_62',  size:'10', type:'PP',  badges:['PP','10吋'],               name:'PP 10" 纖維濾心 5u 保鮮膜 62mm',                 price:30  },
-    { id:'udf10_sgs',   size:'10', type:'UDF', badges:['UDF','10吋','SGS'],         name:'UDF 10" 粒活性碳 綠蓋（內標SGS）',                price:150 },
-    { id:'cto10_sgs',   size:'10', type:'CTO', badges:['CTO','10吋','SGS'],         name:'CTO 10" 透明墊片 1050（內標SGS）',                price:150 },
-    { id:'pp10_nsf',    size:'10', type:'PP',  badges:['PP','10吋','NSF'],          name:'PP 10" 纖維濾心 PSN05-10"（NSF）',                 price:35  },
-    { id:'cto10_nsf',   size:'10', type:'CTO', badges:['CTO','10吋','NSF'],         name:'CTO 10" 透明墊片 塊狀活性碳（NSF）',                price:220 },
-    { id:'gac10_ocb',   size:'10', type:'UDF', badges:['顆粒碳','10吋'],            name:'顆粒活性碳濾心 OCB-934-10"-B',                     price:180 },
+    { id:'pp10_5u_62',  size:'10', type:'PP',  badges:['PP','10吋'],                name:'PP 10" 纖維濾心 5u 保鮮膜 62mm',                  price:30  },
+    { id:'udf10_sgs',   size:'10', type:'UDF', badges:['UDF','10吋','SGS'],          name:'UDF 10" 粒活性碳 綠蓋（內標SGS）',                 price:150 },
+    { id:'cto10_sgs',   size:'10', type:'CTO', badges:['CTO','10吋','SGS'],          name:'CTO 10" 透明墊片 1050（內標SGS）',                 price:150 },
+    { id:'pp10_nsf',    size:'10', type:'PP',  badges:['PP','10吋','NSF'],           name:'PP 10" 纖維濾心 PSN05-10"（NSF）',                  price:35  },
+
+    // ✅ 價格更新：避免同名重複（你提供的新價 450）
+    { id:'cto10_nsf',   size:'10', type:'CTO', badges:['CTO','10吋','NSF'],          name:'CTO 10" 透明墊片 塊狀活性碳（NSF）',                price:450 },
+
+    { id:'gac10_ocb',   size:'10', type:'UDF', badges:['顆粒碳','10吋'],             name:'顆粒活性碳濾心 OCB-934-10"-B',                     price:180 },
 
     // —— 10 吋（新增：小T / RO / 樹脂）——
-    { id:'t_post_coconut', size:'10', type:'CTO', badges:['小T','後置','椰殼'],     name:'小T 後置 椰殼活性碳',                              price:300 },
-    { id:'t_post_112ca_sgs',size:'10', type:'CTO', badges:['小T','後置','SGS'],     name:'小T 後置 活性碳 112-CA（SGS）',                     price:300 },
-    { id:'t_post_maifan_y',  size:'10', type:'UDF', badges:['小T','後置','麥飯石'],  name:'小T 後置 麥飯石（黃色）',                          price:350 },
-    { id:'t_post_4in1',      size:'10', type:'UDF', badges:['小T','後置','4合1'],    name:'小T 後置 標準 4 合 1（陶瓷＋麥飯石＋遠紅多礦）',      price:400 },
-    { id:'ro_alp_50b',       size:'10', type:'RO',  badges:['RO','台製','ALP'],      name:'RO 台製（ALP）膜 50-B',                            price:500 },
-    { id:'udf10_resin_dual', size:'10', type:'UDF', badges:['UDF','10吋','雙認證'],  name:'UDF 10" 樹脂濾心 雙認證 黃蓋',                      price:300 },
+    { id:'t_post_coconut',   size:'10', type:'CTO', badges:['小T','後置','椰殼'],     name:'小T 後置 椰殼活性碳',                               price:300 },
+    { id:'t_post_112ca_sgs', size:'10', type:'CTO', badges:['小T','後置','SGS'],      name:'小T 後置 活性碳 112-CA（SGS）',                      price:300 },
+    { id:'t_post_maifan_y',  size:'10', type:'UDF', badges:['小T','後置','麥飯石'],    name:'小T 後置 麥飯石（黃色）',                           price:350 },
+    { id:'t_post_4in1',      size:'10', type:'UDF', badges:['小T','後置','4合1'],      name:'小T 後置 標準 4 合 1（陶瓷＋麥飯石＋遠紅多礦）',       price:400 },
+    { id:'ro_alp_50b',       size:'10', type:'RO',  badges:['RO','台製','ALP'],        name:'RO 台製（ALP）膜 50-B',                             price:500 },
+    { id:'udf10_resin_dual', size:'10', type:'UDF', badges:['UDF','10吋','雙認證'],    name:'UDF 10" 樹脂濾心 雙認證 黃蓋',                       price:300 },
 
     // —— 20 吋（原本）——
-    { id:'pp20_nsf',     size:'20', type:'PP',  badges:['PP','20吋','NSF'],         name:'PP 20" 纖維濾心 5u（NSF）',                        price:120 },
-    { id:'cto20_paper',  size:'20', type:'CTO', badges:['CTO','20吋','台製'],        name:'CTO 20" 塊狀活性碳 台製包紙 1050',                  price:300 },
-    { id:'cto20_nsf',    size:'20', type:'CTO', badges:['CTO','20吋','NSF','台製'],  name:'CTO 20" 塊狀活性碳 台製 NSF 1050',                  price:400 },
-    { id:'cto20_sgs',    size:'20', type:'CTO', badges:['CTO','20吋','SGS','台製'],  name:'CTO 20" 塊狀活性碳 台製 SGS 1050',                  price:350 },
+    { id:'pp20_nsf',     size:'20', type:'PP',  badges:['PP','20吋','NSF'],           name:'PP 20" 纖維濾心 5u（NSF）',                          price:120 },
+    { id:'cto20_paper',  size:'20', type:'CTO', badges:['CTO','20吋','台製'],          name:'CTO 20" 塊狀活性碳 台製包紙 1050',                    price:300 },
+    { id:'cto20_nsf',    size:'20', type:'CTO', badges:['CTO','20吋','NSF','台製'],    name:'CTO 20" 塊狀活性碳 台製 NSF 1050',                    price:400 },
+    { id:'cto20_sgs',    size:'20', type:'CTO', badges:['CTO','20吋','SGS','台製'],    name:'CTO 20" 塊狀活性碳 台製 SGS 1050',                    price:350 },
+
+    // —— 追加品項（之前加的）——
+    { id:'pp20_bigfat_5u_nsf',    size:'20', type:'PP',  badges:['PP','20吋','大胖','NSF'], name:'PP 20" 大胖濾心 5U（NSF）',                    price:350 },
+    { id:'cto20_bigfat_1050_sgs', size:'20', type:'CTO', badges:['CTO','20吋','大胖','SGS','台製'], name:'CTO 20" 大胖濾心 1050 台製（SGS）',     price:800 },
+
+    { id:'mod_pp_antibac_green',    size:'10', type:'PP',  badges:['可拆式','PP','綠頭'],           name:'可拆式 抗菌 PP 濾芯（綠頭）',            price:400 },
+    { id:'mod_hc_nsf_kdf_green',    size:'10', type:'UDF', badges:['可拆式','活性碳','NSF','KDF','綠頭'], name:'可拆式 HC-NSF 活性碳＋KDF(100g) 濾心（綠頭）', price:600 },
+    { id:'mod_gac_900',             size:'10', type:'UDF', badges:['可拆式','顆粒碳'],              name:'可拆 顆粒活性碳-900 濾心',               price:450 },
+    { id:'mod_cto_block_green',     size:'10', type:'CTO', badges:['可拆式','CTO','綠頭'],          name:'可拆式 塊狀 CTO 濾芯（綠頭）',            price:400 },
+    { id:'mod_resin_ions_green',    size:'10', type:'UDF', badges:['可拆式','樹脂','綠頭'],          name:'可拆式 樹脂 IONS（綠頭）',               price:500 },
+    { id:'mod_hf_mem_g2_green',     size:'10', type:'ACC', sub:'其他', badges:['可拆式','膜','中空絲','G2','綠頭'], name:'可拆式 10" 中空絲膜＋G2（綠頭）', price:2500 },
+
+    { id:'pp10_psn01_nsf',      size:'10', type:'PP',  badges:['PP','10吋','NSF'],    name:'PP 10" 纖維濾心 PSN01-10"（NSF）',                  price:40  },
+    { id:'pp10_pkp100_ppw',     size:'10', type:'PP',  badges:['PP','10吋','水寶貝'],  name:'PP 10" 水寶貝 纖維濾心 PKP-100-PPW',               price:150 },
+    { id:'pp20_ps01_20_kf_nfs', size:'20', type:'PP',  badges:['PP','20吋','NFS'],    name:'PP 20" 纖維濾心 PS-01-20-KF-NFS',                  price:150 },
+
+    { id:'t_post_bamboo_green',     size:'10', type:'UDF', badges:['小T','後置','竹炭'],     name:'小T 後置 竹炭綠心（綠）',                    price:350 },
+    { id:'t_post_hf_mem_6',         size:'10', type:'ACC', sub:'其他', badges:['小T','後置','中空絲','6吋'], name:'小T 後置 中空絲膜 6"',             price:1600 },
+    { id:'t_waterbaby_post_hc_nsf', size:'10', type:'UDF', badges:['小T','水寶貝','後置','HC','NSF'], name:'小T 水寶貝 後置活性碳 HC-NSF',         price:350 },
+    { id:'t_post_ca_import_om',     size:'10', type:'UDF', badges:['小T','後置','進口OM'],   name:'小T 後置 活性碳 進口 OM',                      price:400 },
+
+    { id:'bigT_waterbaby_kt5633_hc_nsf', size:'10', type:'UDF', badges:['大T','水寶貝','後置','HC','NSF'], name:'大T 水寶貝 後置 KT5633 活性碳 HC-NSF', price:350 },
+    { id:'bigT_post_kt5633_ca',          size:'10', type:'UDF', badges:['大T','後置','CA'],           name:'大T 後置濾心 KT5633-CA',                     price:350 },
+
+    { id:'udf10_waterbaby_jac',   size:'10', type:'UDF', badges:['UDF','10吋','水寶貝','JAC'], name:'UDF 10" 水寶貝 食品墊片活性碳 綠蓋（JAC）',  price:450 },
+    { id:'bigT_ocbt33_gac_om',    size:'10', type:'UDF', badges:['大T','顆粒碳','進口OM'],     name:'大T OCBT33 顆粒活性碳（進口OM）',              price:500 },
+
+    { id:'cto10_waterbaby_greennet', size:'10', type:'CTO', badges:['CTO','10吋','水寶貝','台製','綠網'], name:'CTO 10" 水寶貝 食品墊片 塊狀台製 綠網', price:450 },
+    { id:'cto10_omnipure_us',         size:'10', type:'CTO', badges:['CTO','10吋','OMNIPURE','美制'], name:'CTO 10" 塊狀活性碳（OMNIPURE）美制',        price:450 },
+
+    { id:'ro_aspring_tw1812_50',  size:'10', type:'RO', badges:['RO','台製','ASPRING'],  name:'RO 台製（ASPRING）膜 TW-1812-50',               price:1000 },
+    { id:'ro_filmtec_tw1812_50g', size:'10', type:'RO', badges:['RO','美製','FILMTEC'],  name:'RO 美製（FILMTEC）膜 TW-1812-50G',             price:2000 },
+    { id:'ro_tr_1812_75a',        size:'10', type:'RO', badges:['RO','TR'],              name:'RO（TR）膜 1812-75-A',                           price:1000 },
+    { id:'ro_tw_2012_150_jp',     size:'10', type:'RO', badges:['RO','JP'],              name:'RO-TW-2012-150 JP',                              price:2000 },
+    { id:'ro_vo_tw1812_100',      size:'10', type:'RO', badges:['RO','VO'],              name:'RO 膜 V0TW-1812-100',                            price:1800 },
+    { id:'ro_3012_500',           size:'10', type:'RO', badges:['RO','3012'],            name:'RO-3012-500',                                   price:3000 },
+    { id:'ro_3012_600',           size:'10', type:'RO', badges:['RO','3012'],            name:'RO-3012-600',                                   price:3000 },
+
+    // —— 配件（獨立區）——
+    { id:'motor_838_stand',        size:'10', type:'ACC', sub:'馬達/腳架', badges:['配件','馬達','腳架'],   name:'馬達 838 鐵腳架',                                   price:2200 },
+    { id:'motor_837_stand',        size:'10', type:'ACC', sub:'馬達/腳架', badges:['配件','馬達','腳架'],   name:'馬達 837 鐵腳架',                                   price:2000 },
+    { id:'transformer_12a_110v',   size:'10', type:'ACC', sub:'電源',       badges:['配件','變壓器','110V'], name:'變壓器 1.2A 110V（馬達用）',                         price:500  },
+
+    { id:'head_cap_2fen',          size:'10', type:'ACC', sub:'濾頭/外殼',   badges:['配件','2分'],          name:'濾頭濾芯上蓋 2 分（箱外殼用）',                        price:150  },
+    { id:'base_4stage_626',        size:'10', type:'ACC', sub:'底座',        badges:['配件','底座','四道'],   name:'四道式 底座組 626',                                   price:300  },
+    { id:'tank_ro_132_white',      size:'10', type:'ACC', sub:'壓力桶',      badges:['配件','壓力桶'],        name:'壓力桶 RO-132（白色）',                                 price:700  },
+
+    { id:'faucet_gooseneck_blue_cn',   size:'10', type:'ACC', sub:'龍頭', badges:['配件','鵝頸','2分','CN'],           name:'鵝頸 單柄 天空藍 彩盒陶鵝 2分 CN',            price:500  },
+    { id:'faucet_gooseneck_tri_cn',    size:'10', type:'ACC', sub:'龍頭', badges:['配件','鵝頸','2分','CN'],           name:'鵝頸 商檢 陶瓷龍頭 三叉 2分 CN',               price:500  },
+    { id:'faucet_gooseneck_nolead_tw', size:'10', type:'ACC', sub:'龍頭', badges:['配件','鵝頸','2分','TW','無鉛'],    name:'鵝頸（無鉛）陶瓷單柄 2分 TW',                  price:1800 },
+    { id:'faucet_gooseneck_ss_cn',     size:'10', type:'ACC', sub:'龍頭', badges:['配件','鵝頸','2分','CN','白鐵'],    name:'鵝頸龍頭（白鐵不銹鋼）2分 CN',                price:1500 },
   ];
 
   // ====== DOM ======
   const $grid10 = document.getElementById('grid10');
   const $grid20 = document.getElementById('grid20');
+  const $gridAcc = document.getElementById('gridAcc');
+
   const $q = document.getElementById('q');
   const $filter = document.getElementById('filter');
+  const $subFilter = document.getElementById('subFilter');
+
   const $btnReset = document.getElementById('btnReset');
   const $btnResetTop = document.getElementById('btnResetTop');
 
@@ -449,6 +530,7 @@
   function getProduct(id){ return products.find(p=>p.id===id); }
 
   function cardHTML(p){
+    const subTag = (p.type==='ACC' && p.sub) ? `<span class="chip warn">${escapeHTML(p.sub)}</span>` : '';
     return `
       <div class="product">
         <div class="img">IMAGE PLACEHOLDER</div>
@@ -456,7 +538,7 @@
         <div class="topline">
           <div style="flex:1">
             <div class="title">${escapeHTML(p.name)}</div>
-            <div class="meta">${p.badges.map(chipHTML).join('')}</div>
+            <div class="meta">${subTag}${p.badges.map(chipHTML).join('')}</div>
           </div>
           <div class="price">
             <div><b>${money(p.price)}</b></div>
@@ -478,9 +560,9 @@
     `;
   }
 
-  function emptyHTML(){
+  function emptyHTML(label){
     return `<div class="cartEmpty" style="grid-column:1/-1">
-      沒有符合的品項。<br/>換個關鍵字，或點「重置」看看。
+      ${escapeHTML(label || '沒有符合的品項。')}<br/>換個關鍵字，或點「重置」看看。
     </div>`;
   }
 
@@ -489,24 +571,45 @@
     const query = ($q.value || '').trim().toLowerCase();
     const f = $filter.value;
 
+    // ✅ 只有選「配件」才顯示子分類
+    if(f === 'ACC'){
+      $subFilter.style.display = '';
+    }else{
+      $subFilter.style.display = 'none';
+      $subFilter.value = 'all';
+    }
+    const sub = $subFilter.value;
+
     const filtered = products.filter(p=>{
       const hitText = !query
         || p.name.toLowerCase().includes(query)
         || p.badges.join(' ').toLowerCase().includes(query)
-        || (p.type || '').toLowerCase().includes(query);
+        || (p.type || '').toLowerCase().includes(query)
+        || (p.sub || '').toLowerCase().includes(query);
 
       let hitFilter = true;
-      if(f==='10' || f==='20') hitFilter = (p.size===f);
+      if(f==='10' || f==='20') hitFilter = (p.size===f && p.type!=='ACC');
       else if(f==='PP' || f==='UDF' || f==='CTO' || f==='RO') hitFilter = (p.type===f);
+      else if(f==='ACC') hitFilter = (p.type==='ACC');
 
-      return hitText && hitFilter;
+      let hitSub = true;
+      if(f==='ACC' && sub !== 'all'){
+        hitSub = (p.sub === sub);
+      }
+
+      return hitText && hitFilter && hitSub;
     });
 
-    const list10 = filtered.filter(p=>p.size==='10');
-    const list20 = filtered.filter(p=>p.size==='20');
+    // ✅ 10/20 吋只放濾芯/RO，不混配件
+    const list10 = filtered.filter(p=>p.size==='10' && p.type!=='ACC');
+    const list20 = filtered.filter(p=>p.size==='20' && p.type!=='ACC');
 
-    $grid10.innerHTML = list10.length ? list10.map(cardHTML).join('') : emptyHTML();
-    $grid20.innerHTML = list20.length ? list20.map(cardHTML).join('') : emptyHTML();
+    // ✅ 配件獨立區
+    const listAcc = filtered.filter(p=>p.type==='ACC');
+
+    $grid10.innerHTML = list10.length ? list10.map(cardHTML).join('') : emptyHTML('10 吋區：沒有符合的品項');
+    $grid20.innerHTML = list20.length ? list20.map(cardHTML).join('') : emptyHTML('20 吋區：沒有符合的品項');
+    $gridAcc.innerHTML = listAcc.length ? listAcc.map(cardHTML).join('') : emptyHTML('配件區：沒有符合的品項');
   }
 
   // ====== qty ======
@@ -557,7 +660,7 @@
       <div class="cartItem">
         <div style="flex:1">
           <div class="name">${escapeHTML(p.name)}</div>
-          <div class="sub2">${p.badges.map(b=>escapeHTML(b)).join('・')}｜建議市價 ${money(p.price)}</div>
+          <div class="sub2">${p.badges.map(b=>escapeHTML(b)).join('・')}${p.sub ? '｜' + escapeHTML(p.sub) : ''}｜建議市價 ${money(p.price)}</div>
 
           <div class="row" style="margin-top:8px">
             <div class="qty" data-cartqty="${id}">
@@ -648,12 +751,19 @@
 
   // ====== events ======
   function resetFilters(){
-    $q.value=''; $filter.value='all'; renderProducts();
+    $q.value='';
+    $filter.value='all';
+    $subFilter.value='all';
+    $subFilter.style.display='none';
+    renderProducts();
   }
+
   $q.addEventListener('input', renderProducts);
   $filter.addEventListener('change', renderProducts);
-  document.getElementById('btnReset').addEventListener('click', resetFilters);
-  document.getElementById('btnResetTop').addEventListener('click', resetFilters);
+  $subFilter.addEventListener('change', renderProducts);
+
+  $btnReset.addEventListener('click', resetFilters);
+  $btnResetTop.addEventListener('click', resetFilters);
 
   $btnClear.addEventListener('click', ()=>{
     if(cart.size===0) return;
